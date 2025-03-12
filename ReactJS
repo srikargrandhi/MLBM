@@ -1,0 +1,63 @@
+<script>
+    document.getElementById('signupForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const feedbackDiv = document.getElementById('signupFeedback');
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+
+        try {
+            const response = await fetch('/.netlify/functions/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ signupEmail: email, signupPassword: password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                feedbackDiv.textContent = data.message || 'Signup successful!';
+                feedbackDiv.className = 'feedback-message success-message';
+            } else {
+                feedbackDiv.textContent = data.error || 'Signup failed.';
+                feedbackDiv.className = 'feedback-message error-message';
+            }
+        } catch (error) {
+            feedbackDiv.textContent = 'Error during signup. Please try again.';
+            feedbackDiv.className = 'feedback-message error-message';
+            console.error("Signup error:", error);
+        }
+
+        feedbackDiv.style.display = 'block';
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const feedbackDiv = document.getElementById('loginFeedback');
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+            const response = await fetch('/.netlify/functions/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ loginEmail: email, loginPassword: password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                feedbackDiv.textContent = data.message || 'Login successful!';
+                feedbackDiv.className = 'feedback-message success-message';
+            } else {
+                feedbackDiv.textContent = data.error || data.message || 'Login failed.';
+                feedbackDiv.className = 'feedback-message error-message';
+            }
+        } catch (error) {
+            feedbackDiv.textContent = 'Error during login. Please try again.';
+            feedbackDiv.className = 'feedback-message error-message';
+            console.error("Login error:", error);
+        }
+
+        feedbackDiv.style.display = 'block';
+    });
+</script>
